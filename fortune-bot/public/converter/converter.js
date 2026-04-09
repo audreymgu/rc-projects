@@ -33,20 +33,22 @@ async function ingestFiles() {
     for (file of this.files) {
         const text = await file.text();
         const parser = new DOMParser();
+        
+        // import SVG as DOM object
         const doc = parser.parseFromString(text, 'image/svg+xml');
 
-        // const propArray = text.match(/viewBox=".*?"/);
-        // let pathArray = text.match(/<path[\s\S]*\/>/g);
-
-        // for (path of pathArray) {
-        //     const path = path.replaceAll(/\n|\t/g, "");
-        // }
-        // console.log(propArray);
-        // console.log(pathArray);
-    
+        // doc.children[0] is the SVG element
         const pathDOM = doc.children[0].querySelectorAll("path");
         const paths = [];
         let pathSegments = [];
+
+        // get name
+        const name = doc.children[0].getAttribute("id");
+
+        console.log(name);
+
+        // get rendering parameters
+        const params = [parseFloat(doc.children[0].getAttribute("width")), parseFloat(doc.children[0].getAttribute("height"))];
 
         // get paths
         for (path of pathDOM) {
@@ -54,23 +56,51 @@ async function ingestFiles() {
             paths.push(string);
         }
 
-        // pathArray.map((path) => {
-        //     return path.replaceAll(/ /g, "");
-        // })
-
         // break into segments
         for (i in paths) {
-            const segments = paths[i].match(/[MSsCc](\d.|\.|,|-)+/g);
+            const segments = paths[i].match(/[MSsCc][^MSsCc]*/g);
             pathSegments = segments;
         }
 
+        // clean and separate point data
         pathSegments = pathSegments.map((segment) => {
             // add commas back, then split by comma
             return segment.replaceAll(/[MSsCc]/g, "$&,").replaceAll(/-/g, ",-").split(/,+/);
         });
 
-        console.log(pathSegments);
+        const shape = {
+            name,
+            params,
+            pathSegments
+        };
 
+        // console.log(shape);
+        // console.log(params);
+        // console.log(pathSegments);
+        console.log(shape);
         // debugger;
+
+        const response = await getResponse('/shape', shape);
+        checkResponse(response);
     }
 };
+
+async function getResponse(type, data) {
+    const response = await fetch( type, { 
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ data }),
+    });
+    return response;
+}
+
+async function checkResponse(response) {
+    if (response.ok) {
+        console.log("shape sent to server");
+    } else {
+        console.log("error");
+        console.log(response);
+    }
+}

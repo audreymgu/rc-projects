@@ -17,7 +17,24 @@ app.post( ['/hello', '/input', '/reset'], (req, res) => {
   res.sendStatus(200);
 })
 
-var net = require("net");
+app.post( ['/shape'], (req, res) => {
+  console.log(JSON.stringify(req.body));
+  appendData(JSON.stringify(req.body));
+  res.sendStatus(200);
+})
+
+const fs = require('node:fs/promises');
+
+async function appendData(data) {
+  try {
+    await fs.appendFile('alphabet.json', data);
+    console.log('Data appended successfully');
+  } catch (err) {
+    console.error('Error appending data:', err);
+  }
+}
+
+const net = require("net");
 
 class LineusManager {
   constructor() {
