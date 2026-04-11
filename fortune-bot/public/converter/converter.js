@@ -37,46 +37,27 @@ async function ingestFiles() {
         // import SVG as DOM object
         const doc = parser.parseFromString(text, 'image/svg+xml');
 
-        // doc.children[0] is the SVG element
-        const pathDOM = doc.children[0].querySelectorAll("path");
-        const paths = [];
-        let pathSegments = [];
-
         // get name
         const name = doc.children[0].getAttribute("id");
-
-        console.log(name);
 
         // get rendering parameters
         const params = [parseFloat(doc.children[0].getAttribute("width")), parseFloat(doc.children[0].getAttribute("height"))];
 
-        // get paths
-        for (path of pathDOM) {
-            const string = path.getAttribute("d");
-            paths.push(string);
-        }
+        // doc.children[0] is the SVG element
+        const pathsDOM = doc.children[0].querySelectorAll("path");
+        const paths = [];
 
-        // break into segments
-        for (i in paths) {
-            const segments = paths[i].match(/[MSsCc][^MSsCc]*/g);
-            pathSegments = segments;
-        }
-
-        // clean and separate point data
-        pathSegments = pathSegments.map((segment) => {
-            // add commas back, then split by comma
-            return segment.replaceAll(/[MSsCc]/g, "$&,").replaceAll(/-/g, ",-").split(/,+/);
+        pathsDOM.forEach(path => {
+            const data = path.getAttribute('d');
+            paths.push(data);
         });
 
         const shape = {
             name,
             params,
-            pathSegments
+            paths
         };
 
-        // console.log(shape);
-        // console.log(params);
-        // console.log(pathSegments);
         console.log(shape);
         // debugger;
 

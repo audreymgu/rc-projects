@@ -10,7 +10,7 @@ app.use(express.static("public"));
 app.use(express.json());
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`fortune-bot listening on port ${port}`);
 });
 
 // receive client commands
@@ -20,11 +20,15 @@ app.post( ['/hello', '/input', '/reset'], (req, res) => {
   res.sendStatus(200);
 })
 
+// handle file uploads
 app.post( ['/shape'], (req, res) => {
-  console.log(JSON.stringify(req.body));
   appendData(JSON.stringify(req.body.data));
   res.sendStatus(200);
 })
+
+function remapData() {
+  
+}
 
 async function appendData(data) {
   try {
