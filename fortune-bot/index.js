@@ -1,8 +1,10 @@
 import { LineusManager } from "./modules/lineus-manager.js";
+import { getCommands, appendData } from "./modules/commands.js";
 import express from "express";
 import fs from "node:fs/promises";
-import pkg from 'svg-path-parser';
-const { parseSVG, makeAbsolute } = pkg;
+
+// load alphabet
+const alphabet = await fs.readFile('alphabet.json', 'utf-8');
 
 const app = express();
 const port = 3000;
@@ -24,49 +26,16 @@ app.post( ['/hello', '/input', '/reset'], (req, res) => {
 
 // handle file uploads
 app.post( ['/shape'], (req, res) => {
-  let commands = [];
-  
-  req.body.data.paths.forEach(path => {
-    const decompressSVG = new parseSVG(path);
-    const absoluteSVG = makeAbsolute(decompressSVG);
-    absoluteSVG.forEach(command => {
-      Object.entries(command).map(([key, value]) => {
-        if (typeof value === 'number') {
-          command[key] = Math.round(value);
-        }
-        if (['command', 'relative'].includes(key)) {
-          delete command[key];
-        }
-      })
-    })
-    commands = absoluteSVG;
-  });
+  const commands = getCommands(req.body.data.paths);
 
   const convertedShape = {
     name: req.body.data.name,
     params: req.body.data.params,
     commands,
   }
-
   appendData(convertedShape);
   res.sendStatus(200);
 });
-
-function remapData() {
-
-}
-
-async function appendData(data) {
-  try {
-    const current = await fs.readFile('alphabet.json', 'utf-8');
-    const parsedCurrent = JSON.parse(current);
-    parsedCurrent.push(data);
-    await fs.writeFile('alphabet.json', JSON.stringify(parsedCurrent, null, 2));
-    console.log('Data appended successfully');
-  } catch (err) {
-    console.error('Error appending data:', err);
-  }
-}
 
 // create LM instance
 // const lm = new LineusManager();
