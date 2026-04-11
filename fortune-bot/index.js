@@ -1,7 +1,8 @@
 import { LineusManager } from "./modules/lineus-manager.js";
-import { getCommands, appendData } from "./modules/commands.js";
+import { getSvgCommands, appendData, readData } from "./modules/commands.js";
 import express from "express";
 import fs from "node:fs/promises";
+import { read } from "node:fs";
 
 // load alphabet
 const alphabet = await fs.readFile('alphabet.json', 'utf-8');
@@ -26,16 +27,19 @@ app.post( ['/hello', '/input', '/reset'], (req, res) => {
 
 // handle file uploads
 app.post( ['/shape'], (req, res) => {
-  const commands = getCommands(req.body.data.paths);
+  const commands = getSvgCommands(req.body.data.paths);
 
-  const convertedShape = {
+  const svgShape = {
     name: req.body.data.name,
     params: req.body.data.params,
     commands,
   }
-  appendData(convertedShape);
+
+  appendData(svgShape);
   res.sendStatus(200);
 });
+
+console.log(readData('a', alphabet));
 
 // create LM instance
 // const lm = new LineusManager();

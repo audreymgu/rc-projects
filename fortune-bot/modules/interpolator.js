@@ -21,7 +21,7 @@ function bezier(points, t) {
     }
 }
 
-function curveInterpolator(points, interval) {
+export function curveInterpolator(points, interval) {
     const increment = 1 / interval;
     const pointArr = [];
     for (let i = 0; i < interval; i++) {
@@ -34,4 +34,4 @@ function curveInterpolator(points, interval) {
     return pointArr;
 }
 
-console.log(curveInterpolator([ [0,0], [0,100], [100,100], [100,0] ], 4));
+console.log(curveInterpolator([ [18,38], [19,42], [21,45], [25,45] ], 3));
