@@ -11,6 +11,9 @@ dependencies:
   net:
     specifier: ^1.0.2
     version: 1.0.2
+  svg-path-parser:
+    specifier: ^1.1.0
+    version: 1.1.0
   svg-pathdata:
     specifier: ^9.0.0
     version: 9.0.0
@@ -472,6 +475,10 @@ packages:
   /statuses@2.0.2:
     resolution: {integrity: sha512-DvEy55V3DB7uknRo+4iOGT5fP1slR8wQohVdknigZPMpMstaKJQWhwiYBACJE3Ul2pTnATihhBYnRhZQHGBiRw==}
     engines: {node: '>= 0.8'}
+    dev: false
+
+  /svg-path-parser@1.1.0:
+    resolution: {integrity: sha512-jGCUqcQyXpfe38R7RFfhrMyfXcBmpMNJI/B+4CE9/Unkh98UporAc461GTthv+TVDuZXsBx7/WiwJb1Oh4tt4A==}
     dev: false
 
   /svg-pathdata@9.0.0:

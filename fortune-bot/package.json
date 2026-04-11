@@ -12,6 +12,7 @@
   "dependencies": {
     "express": "^5.2.1",
     "net": "^1.0.2",
+    "svg-path-parser": "^1.1.0",
     "svg-pathdata": "^9.0.0"
   }
 }
