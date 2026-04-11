@@ -1,8 +1,9 @@
 {
-  "name": "lineus",
+  "name": "fortune-bot",
   "version": "1.0.0",
   "description": "",
-  "main": "lineus.js",
+  "main": "index.js",
+  "type":"module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
