@@ -24,6 +24,8 @@ app.post( ['/hello', '/input', '/reset'], (req, res) => {
 
 // handle file uploads
 app.post( ['/shape'], (req, res) => {
+  let commands = [];
+  
   req.body.data.paths.forEach(path => {
     const decompressSVG = new parseSVG(path);
     const absoluteSVG = makeAbsolute(decompressSVG);
@@ -37,9 +39,16 @@ app.post( ['/shape'], (req, res) => {
         }
       })
     })
-    console.log(absoluteSVG);
+    commands = absoluteSVG;
   });
-  appendData(JSON.stringify(req.body.data));
+
+  const convertedShape = {
+    name: req.body.data.name,
+    params: req.body.data.params,
+    commands,
+  }
+  
+  appendData(JSON.stringify(convertedShape));
   res.sendStatus(200);
 });
 
