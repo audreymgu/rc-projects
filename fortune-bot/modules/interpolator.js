@@ -22,6 +22,7 @@ function bezier(points, t) {
 }
 
 export function curveInterpolator(points, interval) {
+    // note that iterating this way means that the last point (end point) is not sampled. since commands are chained together continuously, starting from where the last one ended, this is actually desired behavior.
     const increment = 1 / interval;
     const pointArr = [];
     for (let i = 0; i < interval; i++) {
