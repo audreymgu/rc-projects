@@ -17,9 +17,21 @@ function bezier(points, t) {
             const newPoint = lerp(points[i], points[i + 1], t);
             intPoints.push(newPoint);
         }
-        console.log(intPoints);
         return bezier(intPoints, t);
     }
 }
 
-// console.log(bezier([ [0,0], [0,100], [100,100], [100,0] ], 0.5));
+function curveInterpolator(points, interval) {
+    const increment = 1 / interval;
+    const pointArr = [];
+    for (let i = 0; i < interval; i++) {
+        let coords = bezier(points, i * increment);
+        coords = coords.map((point) => {
+            return Math.round(point);
+        })
+        pointArr.push(coords);
+    }
+    return pointArr;
+}
+
+console.log(curveInterpolator([ [0,0], [0,100], [100,100], [100,0] ], 4));
