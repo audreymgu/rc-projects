@@ -3,7 +3,7 @@ import net from "net";
 
 export class LineusManager {
   constructor() {
-    this.host = "10.100.2.219";
+    this.host = "192.168.4.1";
     this.client = new net.Socket();
     this.socketState = "";
     this.commandBuffer = [];
@@ -36,8 +36,10 @@ export class LineusManager {
 
   maybeSendMessage() {
     if(this.commandBuffer.length > 0 && this.socketState == 'ready') {
-        let message = this.commandBuffer.pop();
-        this.client.write(message + '\x00\n');
+        setTimeout(() => {
+            let message = this.commandBuffer.pop();
+            this.client.write(message + '\x00\n');
+        }, 300);
     } else {
         // what "this" refers to changes depending on the context, the arrow function binds "this" to where function was called
         setTimeout(() => {this.maybeSendMessage()}, 500);

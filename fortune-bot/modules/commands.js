@@ -55,7 +55,7 @@ export function readData(letter, alphabet) {
         }
         // if command is C, feed in values into interpolator, then append to point array
         if (command.code == 'C') {
-            const interpPoints = curveInterpolator([[command.x0, command.y0], [command.x1, command.y1], [command.x2, command.y2], [command.x, command.y]], 3);
+            const interpPoints = curveInterpolator([[command.x0, command.y0], [command.x1, command.y1], [command.x2, command.y2], [command.x, command.y]], 2);
             points.push(...interpPoints);
         }
 
@@ -64,13 +64,39 @@ export function readData(letter, alphabet) {
             const prev = svgData.commands[i - 1];
             const mirrorX = command.x0 + command.x0 - prev.x2;
             const mirrorY = command.y0 + command.y0 - prev.y2;
-            const interpPoints = curveInterpolator([[command.x0, command.y0], [mirrorX, mirrorY], [command.x2, command.y2], [command.x, command.y]], 3);
+            const interpPoints = curveInterpolator([[command.x0, command.y0], [mirrorX, mirrorY], [command.x2, command.y2], [command.x, command.y]], 2);
             points.push(...interpPoints);
         }
     });    
         
     // return array of points
     return points;
+}
+
+export function writeData(points, offsetX, offsetY, scale) {
+    const gCode = [];
+    points.forEach((point, index) => {
+        const adjustedX = (point[0] * scale) + offsetX;
+        const adjustedY = (point[1] * scale) + offsetY;
+
+        if ( index < (points.length - 2)  ) {
+            // lift up pen at end
+            if ( points[index + 1] == points[index + 2] ) {
+                gCode.push( "G01 X" + adjustedX + " Y" + adjustedY + " Z0");
+                gCode.push( "G01 X" + adjustedX + " Y" + adjustedY + " Z1000");
+                // logging
+                console.log("Coord:" + point[0] + "," + point[1]);
+                console.log("G01 X" + adjustedX + " Y" + adjustedY + " Z0");
+                console.log("G01 X" + adjustedX + " Y" + adjustedY + " Z1000");
+                return;
+            }
+        }
+        gCode.push( "G01 X" + adjustedX + " Y" + adjustedY + " Z0" );
+        // logging
+        console.log("G01 X" + adjustedX + " Y" + adjustedY + " Z0");
+        console.log("Coord:" + point[0] + "," + point[1]);
+    });
+    return gCode;
 }
 
 

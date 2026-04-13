@@ -35,4 +35,5 @@ export function curveInterpolator(points, interval) {
     return pointArr;
 }
 
-console.log(curveInterpolator([ [18,38], [19,42], [21,45], [25,45] ], 3));
+// testing
+// console.log(curveInterpolator([ [18,38], [19,42], [21,45], [25,45] ], 3));

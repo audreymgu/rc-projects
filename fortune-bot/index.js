@@ -1,5 +1,5 @@
 import { LineusManager } from "./modules/lineus-manager.js";
-import { getSvgCommands, appendData, readData } from "./modules/commands.js";
+import { getSvgCommands, appendData, readData, writeData } from "./modules/commands.js";
 import express from "express";
 import fs from "node:fs/promises";
 import { read } from "node:fs";
@@ -20,7 +20,7 @@ app.listen(port, () => {
 
 // receive client commands
 app.post( ['/hello', '/input', '/reset'], (req, res) => {
-  // lm.buffer(req.body.commands);
+  lm.buffer(req.body.commands);
   // HTTP return status, just says "it worked"
   res.sendStatus(200);
 })
@@ -39,15 +39,21 @@ app.post( ['/shape'], (req, res) => {
   res.sendStatus(200);
 });
 
-console.log(readData('a', alphabet));
+const data = readData('a', alphabet);
+
+console.log(data);
+
+const gCodeData = writeData(data, 900, 400, 10);
+
+console.log(gCodeData);
 
 // create LM instance
-// const lm = new LineusManager();
-
-// pass command buffer
-// lm.buffer(commands)
+const lm = new LineusManager();
 
 // run initialization
-// lm.init();
+lm.init();
+
+// pass command buffer
+lm.buffer(gCodeData);
 
 // setTimeout(() => {console.log('beep')}, 1000);

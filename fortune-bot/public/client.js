@@ -1,5 +1,11 @@
 const test = [
   "G01 X900 Y300 Z0",
+  "G01 X900 Y300 Z0",
+  "G01 X900 Y300 Z0"
+];
+
+const testFull = [
+  "G01 X900 Y300 Z0",
   "G01 X900 Y-300 Z0",
   "G01 X900 Y-300 Z1000",
 
