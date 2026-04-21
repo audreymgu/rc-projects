@@ -39,7 +39,7 @@ export class LineusManager {
         setTimeout(() => {
             let message = this.commandBuffer.pop();
             this.client.write(message + '\x00\n');
-        }, 300);
+        }, 5);
     } else {
         // what "this" refers to changes depending on the context, the arrow function binds "this" to where function was called
         setTimeout(() => {this.maybeSendMessage()}, 500);
