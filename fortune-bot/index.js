@@ -58,7 +58,7 @@ function printString(string) {
     const nextX = 50 * scale * line;
     const nextY = (i % 13) * 25 * scale;
     if (letters[i] === " ") {
-
+      continue;
     } else {
       const letterData = readLetter(letters[i], alphabet);
       const gCode = writeLetter(letterData, startX + nextX, startY + nextY, scale);
@@ -89,9 +89,9 @@ function printSymbol(symbol) {
 // const gCodeData = writeLetter(data, 900, -900, 10);
 // console.log(gCodeData);
 
-// const output = printString("faffbbbafafafffffabab");
+const output = printString("trust in yourself");
 const emoji = printSymbol("letter");
-// output.push(...emoji);
+output.push(...emoji);
 // console.log(emoji);
 
 // create LM instance
@@ -101,8 +101,8 @@ const lm = new LineusManager();
 lm.init();
 
 // pass command buffer
-// lm.buffer(output);
-lm.buffer(emoji);
+lm.buffer(output);
+// lm.buffer(emoji);
 // lm.buffer(gCodeData);
 
 // setTimeout(() => {console.log('beep')}, 1000);
