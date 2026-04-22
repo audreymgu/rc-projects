@@ -4,12 +4,12 @@
     <style>
       .cls-1 {
         fill: none;
-        stroke: #231f20;
-        stroke-miterlimit: 10;
+        stroke: #000;
+        stroke-dasharray: 0 0 0 0 0 0;
+        stroke-linejoin: round;
         stroke-width: 2px;
       }
     </style>
   </defs>
-  <path class="cls-1" d="M20.4,10s-5.7-8.3-8.3,0c-2.6,8.3,0,33.7,0,33.7"/>
-  <path class="cls-1" d="M2.6,28.4s14.4-6.4,17.8-3.4"/>
+  <path class="cls-1" d="M4.1,7s4.6,31.5.8,36.5-1.2-16.2,5.3-16.9c6.9-2.2,21.6,16.9-3.2,16.9"/>
 </svg>

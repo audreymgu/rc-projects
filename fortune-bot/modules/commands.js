@@ -80,8 +80,13 @@ export function writeLetter(points, offsetX, offsetY, scale) {
     // offset
     const adjustedX = point[0] * scale + offsetX;
     const adjustedY = point[1] * scale + offsetY;
-
-    if (index < points.length - 2 && index !== 0) {
+    if (index == 0) {
+      const next = points[index + 1];
+      const adjNextX = next[0] * scale + offsetX;
+      const adjNextY = next[1] * scale + offsetY;
+      gCode.push("G01 X" + adjNextX + " Y" + adjNextY + " Z1000");
+      return;
+    } else if (index < points.length - 2) {
       // lift pen at end of previous stroke
       if (point[0] === -1 && point[1] === -1) {
         const prev = points[index - 1];

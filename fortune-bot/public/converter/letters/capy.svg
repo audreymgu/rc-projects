@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="#333" stroke-width="1.5" stroke-linecap="round">
+<!-- Body -->
+<path d="M12 38 C12 28 20 24 32 24 C44 24 52 28 52 38 C52 48 44 52 32 52 C20 52 12 48 12 38"/>
+<!-- Head -->
+<path d="M20 22 C20 14 24 11 30 11 C36 11 40 14 40 22 C40 28 36 30 30 30 C24 30 20 28 20 22"/>
+<!-- Left ear -->
+<path d="M22 14 C20 10 22 7 25 9 C26 11 25 13 23 14"/>
+<!-- Right ear -->
+<path d="M38 14 C40 10 38 7 35 9 C34 11 35 13 37 14"/>
+<!-- Snout bump -->
+<path d="M23 24 C24 21 28 20 30 20 C32 20 36 21 37 24 C36 27 24 27 23 24"/>
+<!-- Left nostril -->
+<path d="M26 23 C26 22 28 22 28 23 C28 24 26 24 26 23"/>
+<!-- Right nostril -->
+<path d="M32 23 C32 22 34 22 34 23 C34 24 32 24 32 23"/>
+<!-- Left eye -->
+<path d="M24 18 C24 17 26 17 26 18 C26 19 24 19 24 18"/>
+<!-- Right eye -->
+<path d="M34 18 C34 17 36 17 36 18 C36 19 34 19 34 18"/>
+<!-- Front left leg -->
+<path d="M20 50 C19 52 18 54 18 57 C18 59 20 60 22 59 S24 57 23 55"/>
+<!-- Front right leg -->
+<path d="M28 51 C28 53 27 55 27 57 C27 59 29 60 31 59 S32 57 31 55"/>
+<!-- Back left leg -->
+<path d="M34 51 C34 53 33 55 33 57 C33 59 35 60 37 59 S38 57 37 55"/>
+<!-- Back right leg -->
+<path d="M42 50 C41 52 40 54 40 57 C40 59 42 60 44 59 S46 57 45 55"/>
+<!-- Tail -->
+<path d="M51 42 C55 40 58 41 58 44 C58 47 55 47 51 46"/>
+</svg>

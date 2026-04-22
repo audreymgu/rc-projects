@@ -5,6 +5,9 @@ window.addEventListener("DOMContentLoaded", () => {
 
 async function ingestFiles() {
     for (file of this.files) {
+        const name = file.name;
+        const newName = name.replace(".svg", "");
+        console.log(newName);
         const text = await file.text();
         const parser = new DOMParser();
         
@@ -12,7 +15,7 @@ async function ingestFiles() {
         const doc = parser.parseFromString(text, 'image/svg+xml');
 
         // get name
-        const name = doc.children[0].getAttribute("id");
+        // const name = doc.children[0].getAttribute("id");
 
         // get rendering parameters
         const params = [parseFloat(doc.children[0].getAttribute("width")), parseFloat(doc.children[0].getAttribute("height"))];
@@ -28,7 +31,7 @@ async function ingestFiles() {
         });
 
         const shape = {
-            name,
+            name: newName,
             params,
             paths
         };
