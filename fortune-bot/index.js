@@ -61,11 +61,15 @@ function printString(string) {
       continue;
     } else {
       const letterData = readLetter(letters[i], alphabet);
-      const gCode = writeLetter(letterData, startX + nextX, startY + nextY, scale);
-      commandBuffer.push(... gCode);
+      const gCode = writeLetter(
+        letterData,
+        startX + nextX,
+        startY + nextY,
+        scale,
+      );
+      commandBuffer.push(...gCode);
     }
-
-  };
+  }
   return commandBuffer;
 }
 
@@ -89,8 +93,8 @@ function printSymbol(symbol) {
 // const gCodeData = writeLetter(data, 900, -900, 10);
 // console.log(gCodeData);
 
-const output = printString("trust in yourself");
-const emoji = printSymbol("letter");
+const output = printString("future is yours to write");
+const emoji = printSymbol("smiley");
 output.push(...emoji);
 // console.log(emoji);
 

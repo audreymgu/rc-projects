@@ -21,28 +21,30 @@ export class LineusManager {
       // poll for messages after successful connection
       // or queue next command after previous success
       if (data.indexOf("hello") == 0 || data.indexOf("ok") == 0) {
-        this.socketState = 'ready'
-        this.maybeSendMessage()
+        this.socketState = "ready";
+        this.maybeSendMessage();
       }
 
       // disconnect on error
       if (data.indexOf("error") == 0) {
         console.log("Error in command " + cmdIndex);
         console.log("Disconnecting...");
-        client.destroy()
+        client.destroy();
       }
     });
   }
 
   maybeSendMessage() {
-    if(this.commandBuffer.length > 0 && this.socketState == 'ready') {
-        setTimeout(() => {
-            let message = this.commandBuffer.pop();
-            this.client.write(message + '\x00\n');
-        }, 5);
+    if (this.commandBuffer.length > 0 && this.socketState == "ready") {
+      setTimeout(() => {
+        let message = this.commandBuffer.pop();
+        this.client.write(message + "\x00\n");
+      }, 50);
     } else {
-        // what "this" refers to changes depending on the context, the arrow function binds "this" to where function was called
-        setTimeout(() => {this.maybeSendMessage()}, 500);
+      // what "this" refers to changes depending on the context, the arrow function binds "this" to where function was called
+      setTimeout(() => {
+        this.maybeSendMessage();
+      }, 500);
     }
   }
 
