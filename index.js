@@ -5,21 +5,20 @@ import express from "express";
 import fs from "node:fs/promises";
 import { read } from "node:fs";
 
-// load alphabet
-const alphabet = await fs.readFile("alphabet.json", "utf-8");
+// load data
+const alphabet = await fs.readFile("./data/alphabet.json", "utf-8");
+const symbols = await fs.readFile("./data/symbols.json", "utf-8");
 
+// serve web utilities
 const app = express();
 const port = 3000;
-
-// serve web client
-app.use(express.static("public"));
+app.use(express.static("utils"));
 app.use(express.json());
-
 app.listen(port, () => {
-  console.log(`fortune-bot listening on port ${port}`);
+  console.log(`utils listening on port ${port}`);
 });
 
-// receive client commands
+// receive utility commands
 app.post(["/hello", "/input", "/reset"], (req, res) => {
   lm.buffer(req.body.commands);
   // HTTP return status, just says "it worked"
@@ -81,7 +80,7 @@ function printSymbol(symbol) {
   const scale = 4;
 
   const commandBuffer = [];
-  const symbolData = readLetter(symbol, alphabet);
+  const symbolData = readLetter(symbol, symbols);
   const gCode = writeLetter(symbolData, startX, startY, scale);
 
   return gCode;
