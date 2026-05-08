@@ -93,8 +93,8 @@ function printSymbol(symbol) {
 // const gCodeData = writeLetter(data, 900, -900, 10);
 // console.log(gCodeData);
 
-const output = printString("future is yours to write");
-const emoji = printSymbol("smiley");
+const output = printString("stay away from wasps");
+const emoji = printSymbol("beedrill");
 output.push(...emoji);
 // console.log(emoji);
 

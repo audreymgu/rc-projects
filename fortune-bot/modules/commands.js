@@ -62,6 +62,12 @@ export function readLetter(letter, alphabet) {
       );
       points.push(...interpPoints);
     }
+    if (command.code == "L") {
+      const start = [command.x0, command.y0];
+      const end = [command.x, command.y];
+      points.push(start);
+      points.push(end);
+    }
   });
 
   // mirror and rotate
