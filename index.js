@@ -8,6 +8,7 @@ import { read } from "node:fs";
 // load data
 const alphabet = await fs.readFile("./data/alphabet.json", "utf-8");
 const symbols = await fs.readFile("./data/symbols.json", "utf-8");
+const messages = await fs.readFile("./data/messages.json", "utf-8");
 
 // serve web utilities
 const app = express();
@@ -15,7 +16,7 @@ const port = 3000;
 app.use(express.static("utils"));
 app.use(express.json());
 app.listen(port, () => {
-  console.log(`utils listening on port ${port}`);
+  console.log(`utils can be reached on ${port}`);
 });
 
 // receive utility commands
@@ -86,12 +87,6 @@ function printSymbol(symbol) {
   return gCode;
 }
 
-// const data = readLetter("capy", alphabet);
-// console.log(data);
-
-// const gCodeData = writeLetter(data, 900, -900, 10);
-// console.log(gCodeData);
-
 const output = printString("stay away from wasps");
 const emoji = printSymbol("beedrill");
 output.push(...emoji);
@@ -99,13 +94,7 @@ output.push(...emoji);
 
 // create LM instance
 const lm = new LineusManager();
-
-// run initialization
 lm.init();
 
 // pass command buffer
 lm.buffer(output);
-// lm.buffer(emoji);
-// lm.buffer(gCodeData);
-
-// setTimeout(() => {console.log('beep')}, 1000);
