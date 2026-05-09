@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<script src="client.js"></script>
+<script src="utils.js"></script>
 
 <html lang="en">
 
@@ -11,11 +11,15 @@
 </head>
 
 <body>
-    <h1>Doodlebot</h1>
-    <button onclick="sendDrawing()" type="button">Press to Doodle</button>
-    <button onclick="resetPosition()" type="button">Reset</button>
-    <button onclick="sayHello()" type="button">Wave</button>
-    <button onclick="playChimes()" type="button">Play Chimes</button>
+    <h1>fortune-bot</h1>
+    <button onclick="tellFortune()" type="button">Tell My Fortune</button>
+    <hr />
+    <p>Tools</p>
+    <div>
+        <button onclick="playChimes()" type="button">Play Chimes</button>
+        <button onclick="sayHello()" type="button">Wave</button>
+        <button onclick="resetPosition()" type="button">Reset to Home</button>
+    </div>
 </body>
 
 </html>

@@ -1,12 +1,14 @@
 [
   {
-    "message": "trust in yourself"
+    "message": "trust in yourself",
+    "symbol" : "letter"
   },
   {
     "message": "future is yours to write"
   },
   { 
-    "message" : "stay away from wasps"
+    "message" : "stay away from wasps",
+    "symbol" : "beedrill"
   },
   { 
     "message" : "smile often"
@@ -21,7 +23,7 @@
     "message" : "you drank enough water today"
   },
   { 
-    "message" : "you'll be alright, here's a flower"
+    "message" : "youll be alright heres a flower"
   },
   { 
     "message" : "monads will solve your problems"

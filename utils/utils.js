@@ -36,9 +36,11 @@ const wave = [
   "G01 X1000 Y1000 Z1000",
 ];
 
-const chimesB = ["G01 X700 Y-1100 Z1000", "G01 X1600 Y-1100 Z1000"];
-
-const chimes = ["G01 X700 Y-900 Z1000", "G01 X1600 Y-900 Z1000"];
+const chimes = [
+  "G01 X700 Y-900 Z1000",
+  "G01 X1600 Y-900 Z1000",
+  "G01 X1000 Y1000 Z1000",
+];
 
 async function getResponse(type, commands) {
   const response = await fetch(type, {
@@ -54,6 +56,8 @@ async function getResponse(type, commands) {
 async function checkResponse(response) {
   if (response.ok) {
     console.log("commands sent");
+    const json = await response.json();
+    console.log(JSON.stringify(json, null, 2));
   } else {
     console.log("error sending commands");
     console.log(response);
@@ -83,4 +87,9 @@ async function resetPosition() {
 
 async function demoLoop() {
   const message = "the future is yours to write";
+}
+
+async function tellFortune() {
+  const response = await getResponse("/tell", chimes);
+  checkResponse(response);
 }

@@ -5,12 +5,14 @@ import express from "express";
 import fs from "node:fs/promises";
 import { read } from "node:fs";
 
-// load data
-const alphabet = await fs.readFile("./data/alphabet.json", "utf-8");
-const symbols = await fs.readFile("./data/symbols.json", "utf-8");
-const messages = await fs.readFile("./data/messages.json", "utf-8");
+// TODO: need to add letter support for commas, apostrophes
 
-// serve web utilities
+// load data
+const alphabet = JSON.parse(await fs.readFile("./data/alphabet.json", "utf-8"));
+const symbols = JSON.parse(await fs.readFile("./data/symbols.json", "utf-8"));
+const messages = JSON.parse(await fs.readFile("./data/messages.json", "utf-8"));
+
+// serve utilities
 const app = express();
 const port = 3000;
 app.use(express.static("utils"));
@@ -19,7 +21,7 @@ app.listen(port, () => {
   console.log(`utils can be reached on ${port}`);
 });
 
-// receive utility commands
+// receive commands
 app.post(["/hello", "/input", "/reset"], (req, res) => {
   lm.buffer(req.body.commands);
   // HTTP return status, just says "it worked"
@@ -40,23 +42,46 @@ app.post(["/shape"], (req, res) => {
   res.sendStatus(200);
 });
 
-// 100px width, 1300px total width, 13 char width
+app.post(["/tell"], (req, res) => {
+  const message = messages[Math.floor(Math.random() * messages.length)];
+  let symbol;
+  if (message.symbol) {
+    symbol = symbols.find((data) => data.name == message.symbol);
+  } else {
+    symbol = symbols[Math.floor(Math.random() * symbols.length)];
+  }
+
+  res.status(200).json({
+    message: message.message,
+    symbol: symbol.name,
+  });
+
+  const printOut = printString(message.message);
+  const printSym = printSymbol(symbol.name);
+  console.log(Array.isArray(printSym));
+  printOut.push(...printSym);
+  printOut.push(...req.body.commands);
+  console.log(printOut);
+  lm.buffer(printOut);
+});
+
+// 75px width, 1300px total width, 17 char width
 // 200px height (remember this is actually X), 400px reserved height, 2 lines
 function printString(string) {
   const commandBuffer = [];
   const letters = string.split("");
 
   // exceed max available space
-  if (letters.length > 26) {
+  if (letters.length > 34) {
     return;
   }
   const startX = 800;
   const startY = -900;
-  const scale = 4;
+  const scale = 3;
   for (let i = 0; i < letters.length; i++) {
-    const line = Math.floor(i / 13);
+    const line = Math.floor(i / 17);
     const nextX = 50 * scale * line;
-    const nextY = (i % 13) * 25 * scale;
+    const nextY = (i % 17) * 25 * scale;
     if (letters[i] === " ") {
       continue;
     } else {
@@ -87,14 +112,6 @@ function printSymbol(symbol) {
   return gCode;
 }
 
-const output = printString("stay away from wasps");
-const emoji = printSymbol("beedrill");
-output.push(...emoji);
-// console.log(emoji);
-
 // create LM instance
 const lm = new LineusManager();
 lm.init();
-
-// pass command buffer
-lm.buffer(output);

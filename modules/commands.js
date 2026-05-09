@@ -2,14 +2,14 @@ import fs from "node:fs/promises";
 import { curveInterpolator } from "./interpolator.js";
 
 export function readLetter(letter, alphabet) {
+  // interpolation factor
+  const interpFactor = 1;
+
   // create point array
   const points = [];
 
-  // parse to JSON
-  const parsed = JSON.parse(alphabet);
-
   // search by key for letter
-  const svgData = parsed.find((data) => data.name == letter);
+  const svgData = alphabet.find((data) => data.name == letter);
 
   // get height
   const width = svgData.params[0];
@@ -31,7 +31,7 @@ export function readLetter(letter, alphabet) {
           [command.x2, command.y2],
           [command.x, command.y],
         ],
-        2,
+        interpFactor,
       );
       points.push(...interpPoints);
     }
@@ -58,7 +58,7 @@ export function readLetter(letter, alphabet) {
           [command.x2, command.y2],
           [command.x, command.y],
         ],
-        2,
+        interpFactor,
       );
       points.push(...interpPoints);
     }
