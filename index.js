@@ -43,26 +43,32 @@ app.post(["/shape"], (req, res) => {
 });
 
 app.post(["/tell"], (req, res) => {
-  const message = messages[Math.floor(Math.random() * messages.length)];
-  let symbol;
-  if (message.symbol) {
-    symbol = symbols.find((data) => data.name == message.symbol);
+  if (lm.commandBuffer.length == 0) {
+    const message = messages[Math.floor(Math.random() * messages.length)];
+    let symbol;
+    if (message.symbol) {
+      symbol = symbols.find((data) => data.name == message.symbol);
+    } else {
+      symbol = symbols[Math.floor(Math.random() * symbols.length)];
+    }
+
+    res.status(200).json({
+      message: message.message,
+      symbol: symbol.name,
+    });
+
+    const printOut = printString(message.message);
+    const printSym = printSymbol(symbol.name);
+    console.log(Array.isArray(printSym));
+    printOut.push(...printSym);
+    printOut.push(...req.body.commands);
+    console.log(printOut);
+    lm.buffer(printOut);
   } else {
-    symbol = symbols[Math.floor(Math.random() * symbols.length)];
+    res.status(200).json({
+      message: "currently busy",
+    });
   }
-
-  res.status(200).json({
-    message: message.message,
-    symbol: symbol.name,
-  });
-
-  const printOut = printString(message.message);
-  const printSym = printSymbol(symbol.name);
-  console.log(Array.isArray(printSym));
-  printOut.push(...printSym);
-  printOut.push(...req.body.commands);
-  console.log(printOut);
-  lm.buffer(printOut);
 });
 
 // 75px width, 1300px total width, 17 char width
@@ -76,7 +82,7 @@ function printString(string) {
     return;
   }
   const startX = 800;
-  const startY = -900;
+  const startY = -700;
   const scale = 3;
   for (let i = 0; i < letters.length; i++) {
     const line = Math.floor(i / 17);
@@ -102,7 +108,7 @@ function printString(string) {
 // 400px height, 400px reserved height, 1 lines
 function printSymbol(symbol) {
   const startX = 1200;
-  const startY = -500;
+  const startY = -300;
   const scale = 4;
 
   const commandBuffer = [];

@@ -23,7 +23,8 @@
     "message" : "you drank enough water today"
   },
   { 
-    "message" : "youll be alright heres a flower"
+    "message" : "youll be alright heres a flower",
+    "symbol" : "flower"
   },
   { 
     "message" : "monads will solve your problems"

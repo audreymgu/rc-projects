@@ -1,25 +1,9 @@
 const test = ["G01 X900 Y300 Z0", "G01 X900 Y300 Z0", "G01 X900 Y300 Z0"];
 
-const testFull = [
-  "G01 X900 Y300 Z0",
-  "G01 X900 Y-300 Z0",
-  "G01 X900 Y-300 Z1000",
-
-  "G01 X1200 Y300 Z0",
-  "G01 X1200 Y-300 Z0",
-  "G01 X1200 Y-300 Z1000",
-
-  "G01 X900 Y0 Z0",
-  "G01 X1200 Y0 Z0",
-  "G01 X1200 Y0 Z1000",
-
-  "G01 X1500 Y150 Z0",
-  "G01 X1500 Y-300 Z0",
-  "G01 X1500 Y-300 Z1000",
-
-  "G01 X1500 Y250 Z0",
-  "G01 X1500 Y300 Z0",
-  "G01 X1500 Y300 Z1000",
+const testLeft = [
+  "G01 X800 Y-700 Z1000",
+  "G01 X1600 Y-700 Z1000",
+  "G01 X1000 Y1000 Z1000",
 ];
 
 const waveCaffinated = [
@@ -37,12 +21,13 @@ const wave = [
 ];
 
 const chimes = [
-  "G01 X700 Y-900 Z1000",
-  "G01 X1600 Y-900 Z1000",
+  "G01 X700 Y-1100 Z1000",
+  "G01 X1600 Y-1100 Z1000",
   "G01 X1000 Y1000 Z1000",
 ];
 
 async function getResponse(type, commands) {
+  console.log(JSON.stringify({ commands }));
   const response = await fetch(type, {
     method: "POST",
     headers: {
@@ -82,6 +67,11 @@ async function sendDrawing() {
 async function resetPosition() {
   const reset = ["G28"];
   const response = await getResponse("/reset", reset);
+  checkResponse(response);
+}
+
+async function leftEdge() {
+  const response = await getResponse("/reset", testLeft);
   checkResponse(response);
 }
 

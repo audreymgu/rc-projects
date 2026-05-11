@@ -26,10 +26,13 @@ export function getSvgCommands(paths) {
 
 export async function appendData(data) {
   try {
-    const current = await fs.readFile("alphabet.json", "utf-8");
+    const current = await fs.readFile("./data/symbols.json", "utf-8");
     const parsedCurrent = JSON.parse(current);
     parsedCurrent.push(data);
-    await fs.writeFile("alphabet.json", JSON.stringify(parsedCurrent, null, 2));
+    await fs.writeFile(
+      "./data/symbols.json",
+      JSON.stringify(parsedCurrent, null, 2),
+    );
     console.log("Data appended successfully");
   } catch (err) {
     console.error("Error appending data:", err);
