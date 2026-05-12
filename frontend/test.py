@@ -75,6 +75,9 @@ buttonT.switch_to_input()
 # Define chime command
 chimes = {"commands": ["G01 X700 Y-1100 Z1000", "G01 X1600 Y-1100 Z1000", "G01 X1000 Y1000 Z1000"]}
 
+status_width = 240
+status_height = 50
+
 def display_loop(refresh):
     while True:
         # rate
@@ -104,6 +107,8 @@ def net_loop(refresh):
         # rate
         time.sleep(refresh)
 
+
+
 display_thread = threading.Thread(target = display_loop, args=(0.05,))
 net_thread = threading.Thread(target = net_loop, args=(5,))
 
@@ -111,7 +116,18 @@ display_thread.start()
 net_thread.start()
 
 while True:
-    time.sleep(1)
+    # flush
+    draw.rectangle((0, 85, 240, 50), outline="green", fill=0)
+    if buttonB.value and not buttonT.value:  # top btn pressed
+        response = requests.post('http://localhost:3000/tell', json = chimes)
+        status = response.json()
+        if status['message'] == "busy":
+            draw.text((0, 85), "busy, please wait :)", font=font, fill="#FFFF00")
+        else:
+            draw.text((0, 85), "divining...", font=font, fill="#FFFF00")
+    if buttonT.value and not buttonB.value:  # bot btn pressed
+        draw.rectangle([85, 0, 240, 50], fill="white")
+        print("pressed bottom btn")
 
 # while True:
 #     # Draw a black filled box to clear the image.
