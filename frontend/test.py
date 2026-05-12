@@ -117,7 +117,7 @@ net_thread.start()
 
 while True:
     # flush
-    draw.rectangle((0, 85, 240, 50), outline="green", fill=0)
+    draw.rectangle((0, 85, 240, 133), outline="green", fill=0)
     if buttonB.value and not buttonT.value:  # top btn pressed
         response = requests.post('http://localhost:3000/tell', json = chimes)
         status = response.json()
