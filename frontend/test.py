@@ -77,18 +77,21 @@ chimes = {"commands": ["G01 X700 Y-1100 Z1000", "G01 X1600 Y-1100 Z1000", "G01 X
 
 def display_loop(refresh):
     while True:
-        # flush 
-        draw.rectangle((0, 0, width, height), outline=0, fill=0)
-        # display
-        disp.image(image, rotation)
         # rate
         time.sleep(refresh)
+        # display
+        disp.image(image, rotation)
 
 def net_loop(refresh):
     while True:
+        # flush
+        draw.rectangle((0, 0, 240, 50), outline="red", fill=0)
         # get network
         cmd = "iwgetid -r"
-        ssid = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+        try:
+            ssid = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+        except subprocess.CalledProcessError as e:
+            ssid = "..."
         net_status = ""
         if ssid == "Line-us-Setup":
            net_status = "hold for fortune -->"
@@ -101,8 +104,14 @@ def net_loop(refresh):
         # rate
         time.sleep(refresh)
 
-display_thread = threading.Thread(target = display_loop, args=(1/15))
-net_thread = threading.Thread(target = net_loop, args=(5))
+display_thread = threading.Thread(target = display_loop, args=(0.05,))
+net_thread = threading.Thread(target = net_loop, args=(5,))
+
+display_thread.start()
+net_thread.start()
+
+while True:
+    time.sleep(1)
 
 # while True:
 #     # Draw a black filled box to clear the image.
