@@ -141,7 +141,7 @@ draw_thread.start()
 
 toggle = True
 
-# test
+# test 2
 
 while True:
     if buttonB.value and not buttonT.value:  # top btn pressed
