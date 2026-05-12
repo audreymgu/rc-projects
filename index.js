@@ -66,7 +66,7 @@ app.post(["/tell"], (req, res) => {
     lm.buffer(printOut);
   } else {
     res.status(200).json({
-      message: "currently busy",
+      message: "busy",
     });
   }
 });

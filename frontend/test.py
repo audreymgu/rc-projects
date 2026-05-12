@@ -65,10 +65,15 @@ font = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf", 24)
 backlight = digitalio.DigitalInOut(board.D22)
 backlight.switch_to_output()
 backlight.value = True
+
+# Setup buttons
 buttonA = digitalio.DigitalInOut(board.D23)
 buttonB = digitalio.DigitalInOut(board.D24)
 buttonA.switch_to_input()
 buttonB.switch_to_input()
+
+# Define chime command
+chimes = {"commands": ["G01 X700 Y-1100 Z1000", "G01 X1600 Y-1100 Z1000", "G01 X1000 Y1000 Z1000"]}
 
 while True:
     # Draw a black filled box to clear the image.
@@ -86,17 +91,23 @@ while True:
     draw.text((x, y), IP, font=font, fill="#FFFFFF")
     y += font.getbbox(IP)[3] - font.getbbox(IP)[1]
     draw.text((x, y), CPU, font=font, fill="#FFFF00")
+    y += font.getbbox(CPU)[3] - font.getbbox(CPU)[1]
 
     if buttonB.value and not buttonA.value:  # just button A pressed
         draw.rectangle([0, 0, width, height], fill="white")
         print("pressed b")
     if buttonA.value and not buttonB.value:  # just button B pressed
-        draw.rectangle([0, 0, width, height], fill="blue")
-        print("pressed a")
+        response = requests.post('http://localhost:3000/tell', json = chimes)
+        status = response.json()
+        if status['message'] == "busy" {
+            draw.text((x, y), "Busy, please wait :)", font=font, fill="#FFFF00")
+        } else {
+            draw.text((x, y), "Divining...", font=font, fill="#FFFF00")
+        }
     # Display image.
     disp.image(image, rotation)
 
-    # Set refresh interval (display + logic).:
+    # Set refresh interval (display + logic).
     time.sleep(0.1)
 
 chimes = [
