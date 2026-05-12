@@ -75,6 +75,8 @@ buttonT.switch_to_input()
 # Define chime command
 chimes = {"commands": ["G01 X700 Y-1100 Z1000", "G01 X1600 Y-1100 Z1000", "G01 X1000 Y1000 Z1000"]}
 
+draw_status = "ready! :)"
+
 status_width = 240
 status_height = 50
 
@@ -107,24 +109,37 @@ def net_loop(refresh):
         # rate
         time.sleep(refresh)
 
+def draw_loop(refresh):
+    while True:
+        # flush
+        req = requests.get("http://localhost:3000/tell/status")
+        if req.json()["status"] == "idle":
+            draw_status = "ready! :)"
+        draw.rectangle((0, 85, 240, 133), outline="green", fill=0)
+        draw.text((0, 85), draw_status, font=font, fill="#FFFF00")
+        time.sleep(refresh)
 
+def poll_status(interval=0.5):
+    while True:
+
+        time.sleep(interval)
 
 display_thread = threading.Thread(target = display_loop, args=(0.05,))
 net_thread = threading.Thread(target = net_loop, args=(5,))
+draw_thread = threading.Thread(target = draw_loop, args=(0.5,))
 
 display_thread.start()
 net_thread.start()
+draw_thread.start()
 
 while True:
-    # flush
-    draw.rectangle((0, 85, 240, 133), outline="green", fill=0)
     if buttonB.value and not buttonT.value:  # top btn pressed
         response = requests.post('http://localhost:3000/tell', json = chimes)
         status = response.json()
         if status['message'] == "busy":
-            draw.text((0, 85), "busy, please wait :)", font=font, fill="#FFFF00")
+            draw_status = "please wait :)"
         else:
-            draw.text((0, 85), "divining...", font=font, fill="#FFFF00")
+            draw_status = "working..."
     if buttonT.value and not buttonB.value:  # bot btn pressed
         draw.rectangle([85, 0, 240, 50], fill="white")
         print("pressed bottom btn")

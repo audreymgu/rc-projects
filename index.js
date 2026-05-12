@@ -71,6 +71,12 @@ app.post(["/tell"], (req, res) => {
   }
 });
 
+app.get("/tell/status", (req, res) => {
+  res.status(200).json({
+    status: lm.commandBuffer.length == 0 ? "idle" : "busy",
+  });
+});
+
 // 75px width, 1300px total width, 17 char width
 // 200px height (remember this is actually X), 400px reserved height, 2 lines
 function printString(string) {
