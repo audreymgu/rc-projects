@@ -2,6 +2,7 @@ import requests
 
 import subprocess
 import time
+import os
 
 import threading
 
@@ -141,7 +142,8 @@ draw_thread.start()
 
 toggle = True
 
-# test 2
+env = os.environ.copy()
+env["GIT_SSH_COMMAND"] = "ssh -i /home/gu/.ssh/deploy_key -o StrictHostKeyChecking=no"
 
 while True:
     if buttonB.value and not buttonT.value:  # top btn pressed
@@ -156,10 +158,23 @@ while True:
             toggle = not toggle
         else:
             subprocess.run(["nmcli", "dev", "wifi", "list"])
+            print("nmcli list done")
             time.sleep(1)
+
             subprocess.run(["nmcli", "dev", "wifi", "connect", "aether"])
-            time.sleep(1)
-            subprocess.run(["git", "-C", "/home/gu/fortune-bot", "-c", "core.sshCommand=ssh -i /home/gu/.ssh/deploy_key", "pull"])
+            print("nmcli connect done")
+            time.sleep(5)
+
+            try:
+                result = subprocess.run(["git", "pull"], cwd="/home/gu/fortune-bot", capture_output=True, text=True, timeout=10, env=env)
+                print("stdout: ", result.stdout)
+                print("stderr: ", result.stderr)
+                print:("return code: ", result.returncode)
+            except subprocess.TimeoutExpired:
+                print("git pull timeout")
+            except Exception as e:
+                print(f"git error: {e}")
+            print("git done")
             time.sleep(1)
             toggle = not toggle
 # while True:
