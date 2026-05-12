@@ -89,11 +89,14 @@ while True:
 
     if buttonB.value and not buttonA.value:  # just button A pressed
         draw.rectangle([0, 0, width, height], fill="white")
+        print("pressed b")
     if buttonA.value and not buttonB.value:  # just button B pressed
         draw.rectangle([0, 0, width, height], fill="blue")
-
+        print("pressed a")
     # Display image.
     disp.image(image, rotation)
+
+    # Set refresh interval (display + logic).:
     time.sleep(0.1)
 
 chimes = [
