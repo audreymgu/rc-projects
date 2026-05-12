@@ -75,8 +75,8 @@ buttonT.switch_to_input()
 # Define chime command
 chimes = {"commands": ["G01 X700 Y-1100 Z1000", "G01 X1600 Y-1100 Z1000", "G01 X1000 Y1000 Z1000"]}
 
-draw_status = "ready! :)"
-
+draw_status = "ready :)"
+net_status = ""
 status_width = 240
 status_height = 50
 
@@ -88,45 +88,52 @@ def display_loop(refresh):
         disp.image(image, rotation)
 
 def net_loop(refresh):
+    global net_status
     while True:
         # flush
-        draw.rectangle((0, 0, 240, 50), outline="red", fill=0)
+        if draw_status == "working...":
+            draw.rectangle((0, 0, 240, 50), outline="#606060", fill=0)
+        else:
+            draw.rectangle((0, 0, 240, 50), outline="red", fill=0)
         # get network
         cmd = "iwgetid -r"
         try:
             ssid = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
         except subprocess.CalledProcessError as e:
             ssid = "..."
-        net_status = ""
         if ssid == "Line-us-Setup":
-           net_status = "hold for fortune -->"
+           net_status = "request fortune ->"
         else:
             net_status = "net: " + ssid
             cmd = "top -bn1 | grep load | awk '{printf \"dreaming: %d%%\", $(NF-2)*100}'"
         y = top + 12
+        x = 10
         # draw
-        draw.text((x, y), net_status, font=font, fill="#FFFFFF")
+        if draw_status == "working...":
+            draw.text((x, y), net_status, font=font, fill="#606060")
+        else:
+            draw.text((x, y), net_status, font=font, fill="#FFFFFF")
         # rate
         time.sleep(refresh)
 
 def draw_loop(refresh):
+    global draw_status
     while True:
         # flush
         req = requests.get("http://localhost:3000/tell/status")
         if req.json()["status"] == "idle":
-            draw_status = "ready! :)"
-        draw.rectangle((0, 85, 240, 133), outline="green", fill=0)
-        draw.text((0, 85), draw_status, font=font, fill="#FFFF00")
+            draw_status = "ready :)"
+        if req.json()["status"] == "busy":
+            draw_status = "working..."
+        y = 90
+        x = 10
+        draw.rectangle((0, 80, 240, 130), outline=0, fill=0)
+        draw.text((x, y), draw_status, font=font, fill="#FFFFFF")
         time.sleep(refresh)
 
-def poll_status(interval=0.5):
-    while True:
-
-        time.sleep(interval)
-
 display_thread = threading.Thread(target = display_loop, args=(0.05,))
-net_thread = threading.Thread(target = net_loop, args=(5,))
-draw_thread = threading.Thread(target = draw_loop, args=(0.5,))
+net_thread = threading.Thread(target = net_loop, args=(2,))
+draw_thread = threading.Thread(target = draw_loop, args=(1,))
 
 display_thread.start()
 net_thread.start()
@@ -136,14 +143,12 @@ while True:
     if buttonB.value and not buttonT.value:  # top btn pressed
         response = requests.post('http://localhost:3000/tell', json = chimes)
         status = response.json()
-        if status['message'] == "busy":
-            draw_status = "please wait :)"
-        else:
-            draw_status = "working..."
     if buttonT.value and not buttonB.value:  # bot btn pressed
-        draw.rectangle([85, 0, 240, 50], fill="white")
-        print("pressed bottom btn")
-
+        net_status = "refreshing connection"
+        subprocess.run(["nmcli", "dev", "wifi", "list"])
+        time.sleep(1)
+        subprocess.run(["nmcli", "dev", "wifi", "connect", "Line-us-Setup"])
+        time.sleep(1)
 # while True:
 #     # Draw a black filled box to clear the image.
 #     draw.rectangle((0, 0, width, height), outline=0, fill=0)
