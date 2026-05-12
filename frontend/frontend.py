@@ -159,7 +159,7 @@ while True:
             time.sleep(1)
             subprocess.run(["nmcli", "dev", "wifi", "connect", "aether"])
             time.sleep(1)
-            subprocess.run(["git", "-C", "/home/gu/fortune-bot", "pull"])
+            subprocess.run(["git", "-C", "/home/gu/fortune-bot", "-c", "core.sshCommand=ssh -i /home/gu/.ssh/deploy_key", "pull"])
             time.sleep(1)
             toggle = not toggle
 # while True:
