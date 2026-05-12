@@ -87,6 +87,11 @@ while True:
     y += font.getbbox(IP)[3] - font.getbbox(IP)[1]
     draw.text((x, y), CPU, font=font, fill="#FFFF00")
 
+    if buttonB.value and not buttonA.value:  # just button A pressed
+        draw.rectangle([0, 0, width, height], fill="white")
+    if buttonA.value and not buttonB.value:  # just button B pressed
+        draw.rectangle([0, 0, width, height], fill="blue")
+
     # Display image.
     disp.image(image, rotation)
     time.sleep(0.1)
