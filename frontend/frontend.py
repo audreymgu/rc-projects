@@ -167,6 +167,9 @@ while True:
             subprocess.run(["nmcli", "dev", "wifi", "connect", "Recurse Center"])
             print("nmcli connect done")
             time.sleep(1)
+            
+            print("attempting to restart service...")
+            subprocess.run(["systemctl", "restart", "fortune-bot.service"])
 
             try:
                 result = subprocess.run(
