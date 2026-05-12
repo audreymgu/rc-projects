@@ -164,6 +164,7 @@ while True:
             time.sleep(1)
 
             subprocess.run(["nmcli", "dev", "wifi", "connect", "aether"])
+            subprocess.run(["nmcli", "dev", "wifi", "connect", "Recurse Center"])
             print("nmcli connect done")
             time.sleep(1)
 
