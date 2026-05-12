@@ -1,8 +1,12 @@
 import requests
 import json
 
+import subprocess
+import time
+
 import board
 import digitalio
+
 from PIL import Image, ImageDraw, ImageFont
 
 from adafruit_rgb_display import st7789
@@ -80,7 +84,7 @@ while True:
     # Write stats.
     y = top
     draw.text((x, y), IP, font=font, fill="#FFFFFF")
-    y += font.getsize(IP)[1]
+    y += font.getbbox(IP)[3] - font.getbbox(IP)[1]
     draw.text((x, y), CPU, font=font, fill="#FFFF00")
 
     # Display image.
