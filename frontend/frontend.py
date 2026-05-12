@@ -141,6 +141,8 @@ draw_thread.start()
 
 toggle = True
 
+# test
+
 while True:
     if buttonB.value and not buttonT.value:  # top btn pressed
         response = requests.post('http://localhost:3000/tell', json = chimes)
