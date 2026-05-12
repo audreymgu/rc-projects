@@ -40,7 +40,7 @@ disp = st7789.ST7789(
 height = disp.width  # we swap height/width to rotate it to landscape!
 width = disp.height
 image = Image.new("RGB", (width, height))
-rotation = 90
+rotation = 270
 
 # Get drawing object to draw on image.
 draw = ImageDraw.Draw(image)
@@ -67,10 +67,10 @@ backlight.switch_to_output()
 backlight.value = True
 
 # Setup buttons
-buttonA = digitalio.DigitalInOut(board.D23)
-buttonB = digitalio.DigitalInOut(board.D24)
-buttonA.switch_to_input()
+buttonB = digitalio.DigitalInOut(board.D23)
+buttonT = digitalio.DigitalInOut(board.D24)
 buttonB.switch_to_input()
+buttonT.switch_to_input()
 
 # Define chime command
 chimes = {"commands": ["G01 X700 Y-1100 Z1000", "G01 X1600 Y-1100 Z1000", "G01 X1000 Y1000 Z1000"]}
@@ -81,48 +81,38 @@ while True:
 
     # Shell scripts for system monitoring from here:
     # https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
-    cmd = "hostname -I | cut -d' ' -f1"
-    IP = "IP: " + subprocess.check_output(cmd, shell=True).decode("utf-8")
-    cmd = "top -bn1 | grep load | awk '{printf \"CPU Load: %.2f\", $(NF-2)}'"
+    cmd = "iwgetid -r"
+    ssid = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+    net_status = ""
+    if ssid == "Line-us-Setup":
+        net_status = "hold for fortune -->"
+    else:
+        net_status = "net: " + ssid
+    cmd = "top -bn1 | grep load | awk '{printf \"dreaming: %d%%\", $(NF-2)*100}'"
+
     CPU = subprocess.check_output(cmd, shell=True).decode("utf-8")
 
     # Write stats.
-    y = top
-    draw.text((x, y), IP, font=font, fill="#FFFFFF")
-    y += font.getbbox(IP)[3] - font.getbbox(IP)[1]
+    y = top + 12
+    draw.text((x, y), net_status, font=font, fill="#FFFFFF")
+    y += font.getbbox(net_status)[3] - font.getbbox(net_status)[1] + 5
     draw.text((x, y), CPU, font=font, fill="#FFFF00")
-    y += font.getbbox(CPU)[3] - font.getbbox(CPU)[1]
+    y += font.getbbox(CPU)[3] - font.getbbox(CPU)[1] + 5
 
-    if buttonB.value and not buttonA.value:  # just button A pressed
-        draw.rectangle([0, 0, width, height], fill="white")
-        print("pressed b")
-    if buttonA.value and not buttonB.value:  # just button B pressed
+    if buttonB.value and not buttonT.value:  # just top btn pressed
         response = requests.post('http://localhost:3000/tell', json = chimes)
         status = response.json()
-        if status['message'] == "busy" {
-            draw.text((x, y), "Busy, please wait :)", font=font, fill="#FFFF00")
-        } else {
-            draw.text((x, y), "Divining...", font=font, fill="#FFFF00")
-        }
+        if status['message'] == "busy":
+            draw.text((x, y), "busy, please wait :)", font=font, fill="#FFFF00")
+        else:
+            draw.text((x, y), "divining...", font=font, fill="#FFFF00")
+    if buttonT.value and not buttonB.value:  # just bot btn pressed
+        draw.rectangle([0, 0, width, height], fill="white")
+        print("pressed bottom btn")
+
     # Display image.
     disp.image(image, rotation)
 
     # Set refresh interval (display + logic).
-    time.sleep(0.1)
-
-chimes = [
-    "G01 X700 Y-1100 Z1000",
-    "G01 X1600 Y-1100 Z1000",
-    "G01 X1000 Y1000 Z1000"
-]
-
-dict = {
-    "commands" : chimes
-}
-
-json_chimes = json.dumps(dict)
-
-response = requests.post('http://localhost:3000/tell', json = dict)
-
-print(response.status_code)
+    time.sleep(0.05)
 
