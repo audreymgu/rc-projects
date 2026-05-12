@@ -84,16 +84,16 @@ function printString(string) {
   const letters = string.split("");
 
   // exceed max available space
-  if (letters.length > 34) {
+  if (letters.length > 32) {
     return;
   }
   const startX = 800;
-  const startY = -700;
+  const startY = -800;
   const scale = 3;
   for (let i = 0; i < letters.length; i++) {
-    const line = Math.floor(i / 17);
+    const line = Math.floor(i / 16);
     const nextX = 50 * scale * line;
-    const nextY = (i % 17) * 25 * scale;
+    const nextY = (i % 16) * 25 * scale;
     if (letters[i] === " ") {
       continue;
     } else {
@@ -114,7 +114,7 @@ function printString(string) {
 // 400px height, 400px reserved height, 1 lines
 function printSymbol(symbol) {
   const startX = 1200;
-  const startY = -300;
+  const startY = -400;
   const scale = 4;
 
   const commandBuffer = [];

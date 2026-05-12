@@ -140,15 +140,25 @@ net_thread.start()
 draw_thread.start()
 
 while True:
+    toggle = True
     if buttonB.value and not buttonT.value:  # top btn pressed
         response = requests.post('http://localhost:3000/tell', json = chimes)
         status = response.json()
     if buttonT.value and not buttonB.value:  # bot btn pressed
-        net_status = "refreshing connection"
-        subprocess.run(["nmcli", "dev", "wifi", "list"])
-        time.sleep(1)
-        subprocess.run(["nmcli", "dev", "wifi", "connect", "Line-us-Setup"])
-        time.sleep(1)
+        if toggle:
+            subprocess.run(["nmcli", "dev", "wifi", "list"])
+            time.sleep(1)
+            subprocess.run(["nmcli", "dev", "wifi", "connect", "Line-us-Setup"])
+            time.sleep(1)
+            toggle = not toggle
+        else:
+            subprocess.run(["nmcli", "dev", "wifi", "list"])
+            time.sleep(1)
+            subprocess.run(["nmcli", "dev", "wifi", "connect", "aether"])
+            time.sleep(1)
+            subprocess.run(["git", "-C", "/home/gu/fortune-bot", "pull"])
+            time.sleep(1)
+            toggle = not toggle
 # while True:
 #     # Draw a black filled box to clear the image.
 #     draw.rectangle((0, 0, width, height), outline=0, fill=0)
