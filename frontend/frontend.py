@@ -143,7 +143,9 @@ draw_thread.start()
 toggle = True
 
 env = os.environ.copy()
-env["GIT_SSH_COMMAND"] = "ssh -i /home/gu/.ssh/deploy_key -o StrictHostKeyChecking=no"
+ssh_key_path = "/root/.ssh/deploy_key"
+repo_path = "/home/gu/fortune-bot"
+env['GIT_SSH_COMMAND'] = f"ssh -i {ssh_key_path} -o StrictHostKeyChecking=no"
 
 while True:
     if buttonB.value and not buttonT.value:  # top btn pressed
@@ -163,17 +165,25 @@ while True:
 
             subprocess.run(["nmcli", "dev", "wifi", "connect", "aether"])
             print("nmcli connect done")
-            time.sleep(5)
+            time.sleep(1)
 
             try:
-                result = subprocess.run(["git", "pull"], cwd="/home/gu/fortune-bot", capture_output=True, text=True, timeout=10, env=env)
-                print("stdout: ", result.stdout)
-                print("stderr: ", result.stderr)
-                print:("return code: ", result.returncode)
+                result = subprocess.run(
+                    ["git", "pull"],
+                    cwd=repo_path,
+                    env=env,
+                    capture_output=True,
+                    text=True,
+                    timeout=60
+                )
+                if result.returncode == 0:
+                    print(f"pull success: {result.stdout}")
+                else:
+                    print(f"pull fail: {result.stderr}")
             except subprocess.TimeoutExpired:
                 print("git pull timeout")
             except Exception as e:
-                print(f"git error: {e}")
+                print(f"error: {e}")
             print("git done")
             time.sleep(1)
             toggle = not toggle
