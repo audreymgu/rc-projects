@@ -1,15 +1,15 @@
 import requests
-import json
 
 import subprocess
 import time
 
+import threading
+
 import board
 import digitalio
+from adafruit_rgb_display import st7789
 
 from PIL import Image, ImageDraw, ImageFont
-
-from adafruit_rgb_display import st7789
 
 # Configuration for CS and DC pins (these are FeatherWing defaults on M0/M4):
 cs_pin = digitalio.DigitalInOut(board.CE0)
@@ -37,7 +37,7 @@ disp = st7789.ST7789(
 
 # Create blank image for drawing.
 # Make sure to create image with mode 'RGB' for full color.
-height = disp.width  # we swap height/width to rotate it to landscape!
+height = disp.width  # we are swapping height/width to rotate it to landscape!
 width = disp.height
 image = Image.new("RGB", (width, height))
 rotation = 270
@@ -48,8 +48,8 @@ draw = ImageDraw.Draw(image)
 # Draw a black filled box to clear the image.
 draw.rectangle((0, 0, width, height), outline=0, fill=(0, 0, 0))
 disp.image(image, rotation)
-# Draw some shapes.
-# First define some constants to allow easy resizing of shapes.
+
+# Define display constants
 padding = -2
 top = padding
 bottom = height - padding
@@ -75,44 +75,72 @@ buttonT.switch_to_input()
 # Define chime command
 chimes = {"commands": ["G01 X700 Y-1100 Z1000", "G01 X1600 Y-1100 Z1000", "G01 X1000 Y1000 Z1000"]}
 
-while True:
-    # Draw a black filled box to clear the image.
-    draw.rectangle((0, 0, width, height), outline=0, fill=0)
+def display_loop(refresh):
+    while True:
+        # flush 
+        draw.rectangle((0, 0, width, height), outline=0, fill=0)
+        # display
+        disp.image(image, rotation)
+        # rate
+        time.sleep(refresh)
 
-    # Shell scripts for system monitoring from here:
-    # https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
-    cmd = "iwgetid -r"
-    ssid = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
-    net_status = ""
-    if ssid == "Line-us-Setup":
-        net_status = "hold for fortune -->"
-    else:
-        net_status = "net: " + ssid
-    cmd = "top -bn1 | grep load | awk '{printf \"dreaming: %d%%\", $(NF-2)*100}'"
-
-    CPU = subprocess.check_output(cmd, shell=True).decode("utf-8")
-
-    # Write stats.
-    y = top + 12
-    draw.text((x, y), net_status, font=font, fill="#FFFFFF")
-    y += font.getbbox(net_status)[3] - font.getbbox(net_status)[1] + 5
-    draw.text((x, y), CPU, font=font, fill="#FFFF00")
-    y += font.getbbox(CPU)[3] - font.getbbox(CPU)[1] + 5
-
-    if buttonB.value and not buttonT.value:  # just top btn pressed
-        response = requests.post('http://localhost:3000/tell', json = chimes)
-        status = response.json()
-        if status['message'] == "busy":
-            draw.text((x, y), "busy, please wait :)", font=font, fill="#FFFF00")
+def net_loop(refresh):
+    while True:
+        # get network
+        cmd = "iwgetid -r"
+        ssid = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+        net_status = ""
+        if ssid == "Line-us-Setup":
+           net_status = "hold for fortune -->"
         else:
-            draw.text((x, y), "divining...", font=font, fill="#FFFF00")
-    if buttonT.value and not buttonB.value:  # just bot btn pressed
-        draw.rectangle([0, 0, width, height], fill="white")
-        print("pressed bottom btn")
+            net_status = "net: " + ssid
+            cmd = "top -bn1 | grep load | awk '{printf \"dreaming: %d%%\", $(NF-2)*100}'"
+        y = top + 12
+        # draw
+        draw.text((x, y), net_status, font=font, fill="#FFFFFF")
+        # rate
+        time.sleep(refresh)
 
-    # Display image.
-    disp.image(image, rotation)
+display_thread = threading.Thread(target = display_loop, args=(1/15))
+net_thread = threading.Thread(target = net_loop, args=(5))
 
-    # Set refresh interval (display + logic).
-    time.sleep(0.05)
+# while True:
+#     # Draw a black filled box to clear the image.
+#     draw.rectangle((0, 0, width, height), outline=0, fill=0)
 
+#     # Shell scripts for system monitoring from here:
+#     # https://unix.stackexchange.com/questions/119126/command-to-display-memory-usage-disk-usage-and-cpu-load
+#     cmd = "iwgetid -r"
+#     ssid = subprocess.check_output(cmd, shell=True).decode("utf-8").strip()
+#     net_status = ""
+#     if ssid == "Line-us-Setup":
+#         net_status = "hold for fortune -->"
+#     else:
+#         net_status = "net: " + ssid
+#     cmd = "top -bn1 | grep load | awk '{printf \"dreaming: %d%%\", $(NF-2)*100}'"
+
+#     CPU = subprocess.check_output(cmd, shell=True).decode("utf-8")
+
+#     # Write stats.
+#     y = top + 12
+#     draw.text((x, y), net_status, font=font, fill="#FFFFFF")
+#     y += font.getbbox(net_status)[3] - font.getbbox(net_status)[1] + 5
+#     draw.text((x, y), CPU, font=font, fill="#FFFF00")
+#     y += font.getbbox(CPU)[3] - font.getbbox(CPU)[1] + 5
+
+#     if buttonB.value and not buttonT.value:  # just top btn pressed
+#         response = requests.post('http://localhost:3000/tell', json = chimes)
+#         status = response.json()
+#         if status['message'] == "busy":
+#             draw.text((x, y), "busy, please wait :)", font=font, fill="#FFFF00")
+#         else:
+#             draw.text((x, y), "divining...", font=font, fill="#FFFF00")
+#     if buttonT.value and not buttonB.value:  # just bot btn pressed
+#         draw.rectangle([0, 0, width, height], fill="white")
+#         print("pressed bottom btn")
+
+#     # Display image.
+#     disp.image(image, rotation)
+
+#     # Set refresh interval (display + logic).
+#     time.sleep(0.05)
