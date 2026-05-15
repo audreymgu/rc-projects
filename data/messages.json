@@ -1,58 +1,6 @@
 [
   {
-    "message": "trust in yourself",
-    "symbol" : "smiley"
-  },
-  {
-    "message": "future is yours to write",
-    "symbol" : "letter"
-  },
-  { 
-    "message" : "stay away from wasps",
-    "symbol" : "beedrill"
-  },
-  { 
-    "message" : "smile often"
-  },
-  { 
-    "message" : "kindness is never wasted"
-  },
-  { 
-    "message" : "no angry way to say bubbles"
-  },
-  { 
-    "message" : "you drank enough water today"
-  },
-  { 
-    "message" : "you will be alright heres a flower",
+    "message" : "wisdom comes from curious places",
     "symbol" : "flower"
-  },
-  { 
-    "message" : "monads will solve your problems"
-  },
-  { 
-    "message" : "clean ur dishwasher filter"
-  },
-  { 
-    "message" : "amid pressure look for joy"
-  },
-  { 
-    "message" : "its all good",
-    "symbol" : "thumbsup"
-  },
-  {
-    "message" : "tomorrow is gonna rule",
-    "symbol" : "sun"
-  },
-  {
-    "message" : "you are blessed",
-    "symbol" : "sun"
-  },
-  {
-    "message" : "all will pass"
-  },
-  {
-    "message" : "you drank enough water today",
-    "symbol" : "water"
   }
 ]
