@@ -1,10 +1,11 @@
 [
   {
     "message": "trust in yourself",
-    "symbol" : "letter"
+    "symbol" : "smiley"
   },
   {
-    "message": "future is yours to write"
+    "message": "future is yours to write",
+    "symbol" : "letter"
   },
   { 
     "message" : "stay away from wasps",
@@ -23,7 +24,7 @@
     "message" : "you drank enough water today"
   },
   { 
-    "message" : "youll be alright heres a flower",
+    "message" : "you will be alright heres a flower",
     "symbol" : "flower"
   },
   { 
@@ -36,6 +37,22 @@
     "message" : "amid pressure look for joy"
   },
   { 
-    "message" : "its all good"
+    "message" : "its all good",
+    "symbol" : "thumbsup"
+  },
+  {
+    "message" : "tomorrow is gonna rule",
+    "symbol" : "sun"
+  },
+  {
+    "message" : "you are blessed",
+    "symbol" : "sun"
+  },
+  {
+    "message" : "all will pass"
+  },
+  {
+    "message" : "you drank enough water today",
+    "symbol" : "water"
   }
 ]
